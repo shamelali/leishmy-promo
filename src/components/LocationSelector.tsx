@@ -1,8 +1,35 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+
+// Dynamic import for Leaflet to prevent SSR issues
+let MapContainer: any = null;
+let TileLayer: any = null;
+let Marker: any = null;
+let Popup: any = null;
+let L: any = null;
+
+// Load Leaflet only on client side
+if (typeof window !== 'undefined') {
+  const reactLeaflet = require('react-leaflet');
+  MapContainer = reactLeaflet.MapContainer;
+  TileLayer = reactLeaflet.TileLayer;
+  Marker = reactLeaflet.Marker;
+  Popup = reactLeaflet.Popup;
+  
+  const leaflet = require('leaflet');
+  L = leaflet.default || leaflet;
+  
+  // Set up Leaflet default icon (same as in MapInner.tsx)
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl:
+      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+    iconUrl:
+      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl:
+      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  });
+}
 
 // Set up Leaflet default icon (same as in MapInner.tsx)
 L.Icon.Default.mergeOptions({
@@ -346,29 +373,35 @@ const [geoLoading, setGeoLoading] = useState(false);
                   )}
                 </div>
               </div>
-            <div className="min-h-[200px]">
-             <MapContainer
-               ref={leafletMapRef}
-               center={selectedLocation ? [selectedLocation.lat, selectedLocation.lng] : MALAYSIA_CENTER}
-                zoom={selectedLocation ? 13 : 8}
-                 style={{ height: "100%", width: "100%" }}
-                 scrollWheelZoom={!disabled}
-                 doubleClickZoom={!disabled}
-                 dragging={!disabled}
-                 whenReady={mapCallbacks}
-               >
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {selectedLocation && (
-                  <Marker key={`${selectedLocation.lat}-${selectedLocation.lng}`} position={[selectedLocation.lat, selectedLocation.lng]}>
-                    {selectedLocation.address && (
-                      <Popup>
-                        <span className="text-sm">{selectedLocation.address}</span>
-                      </Popup>
-                    )}
-                  </Marker>
-                )}
-              </MapContainer>
-            </div>
+             <div className="min-h-[200px]">
+              {MapContainer && TileLayer && Marker && Popup && L ? (
+                <MapContainer
+                  ref={leafletMapRef}
+                  center={selectedLocation ? [selectedLocation.lat, selectedLocation.lng] : MALAYSIA_CENTER}
+                   zoom={selectedLocation ? 13 : 8}
+                    style={{ height: "100%", width: "100%" }}
+                    scrollWheelZoom={!disabled}
+                    doubleClickZoom={!disabled}
+                    dragging={!disabled}
+                    whenReady={mapCallbacks}
+                  >
+                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                   {selectedLocation && (
+                     <Marker key={`${selectedLocation.lat}-${selectedLocation.lng}`} position={[selectedLocation.lat, selectedLocation.lng]}>
+                       {selectedLocation.address && (
+                         <Popup>
+                           <span className="text-sm">{selectedLocation.address}</span>
+                         </Popup>
+                       )}
+                     </Marker>
+                   )}
+                 </MapContainer>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 dark:text-gray-400">Loading map...</p>
+                </div>
+              )}
+             </div>
         </div>
         
         {selectedLocation && (

@@ -235,19 +235,19 @@ export default function PricesTab({
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-gray-100 dark:border-neutral-800 p-6">
         <h2 className="text-sm font-bold text-gray-900 dark:text-white mb-4">Add Service</h2>
         <div className="space-y-3">
-          <div className="grid sm:grid-cols-2 gap-3">
-            <select
-              value={selectedSpecialty || ""}
-              onChange={handleSpecialtyChange}
-              className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none appearance-none"
-            >
-              <option value="">Select a specialty...</option>
-              {expertiseOptions.map(option => (
-                <option key={option} value={option}>
-                  {option}
-                }
-              ))}
-            </select>
+           <div className="grid sm:grid-cols-2 gap-3">
+             <select
+               value={selectedSpecialty || ""}
+               onChange={handleSpecialtyChange}
+               className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none appearance-none"
+             >
+               <option value="">Select a specialty...</option>
+               {expertiseOptions.map(option => (
+                 <option key={option} value={option}>
+                   {option}
+                 </option>
+               ))}
+             </select>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">RM</span>
               <input
