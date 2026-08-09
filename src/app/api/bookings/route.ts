@@ -414,11 +414,10 @@ export async function GET(request: NextRequest) {
       
       // Add search filter if provided
       if (search) {
-        const searchTerm = `%${search}%`;
+        const searchTerm = search ? `%${search}%` : "";
         whereConditions.push(
           or(
             ilike(users.name, searchTerm),
-            ilike(artistUsers.name, searchTerm),
             ilike(bookings.service, searchTerm)
           )
         );
