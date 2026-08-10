@@ -23,11 +23,20 @@ export const metadata: Metadata = {
     siteName: "Leish!",
     locale: "en_MY",
     type: "website",
+    images: [
+      {
+        url: "/hero-warm-tones.png",
+        width: 1200,
+        height: 630,
+        alt: "Leish! beauty booking marketplace",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Leish! — Beauty Booking Marketplace",
     description: "Book Beauty. Anywhere. Discover makeup artists and studios across Malaysia.",
+    images: ["/hero-warm-tones.png"],
   },
   robots: { index: true, follow: true },
 };
