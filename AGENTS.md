@@ -132,6 +132,26 @@ Defined in `vercel.json` — 9 cron jobs (all daily-or-less frequent, Hobby-comp
 
 Sentry is initialized in `src/instrumentation-client.ts` (client) and `src/instrumentation.ts` (server). The root layout imports `@/instrumentation-client` and `@/lib/env` at the top. Client-side Sentry is only enabled in production when `SENTRY_DSN` is set.
 
+## Code Master Agent
+
+Use this when reading or changing code and you want the cleanest, most advanced, and most structured result with minimal back-and-forth.
+
+- Read the relevant code paths first, then infer adjacent patterns before changing anything.
+- Prefer the smallest change that fits the existing architecture, but do not settle for a weak implementation if a cleaner design is clearly better.
+- Aim for explicit names, narrow functions, strong types, and low duplication.
+- Separate behavior changes from refactors when that reduces risk.
+- When a task spans multiple subsystems, split the work into independent slices and delegate only the slices that can truly stand alone.
+- Validate with the project’s checks before finishing: `pnpm check`, plus build or focused tests when the change touches runtime behavior.
+- When the repository or tool access is unclear, stop and verify rather than guessing.
+
+## Dutaintegra Repo Access
+
+To work on `shamelali/dutaintegraweb-main` or related dutaintegra repositories, the GitHub App must be installed with access to that specific repo.
+
+- If repo tools return a 404 or an installation-access error, that usually means the app does not yet have access to that repository.
+- The fix is to grant the GitHub App access to the repo, then retry the same request.
+- Once access is active, I can inspect and edit the repo directly without extra setup.
+
 ## Current Known Issues
 
 - **ESLint is clean** — all previous errors resolved.
