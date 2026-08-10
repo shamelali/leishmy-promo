@@ -1109,3 +1109,13 @@ export const consentRecords = pgTable(
     index("consent_type_idx").on(table.type),
   ],
 );
+
+export const promoWaitlist = pgTable("promo_waitlist", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  audience: varchar("audience", { length: 50 }).notNull().default("client"),
+  location: varchar("location", { length: 255 }).notNull().default("Cyberjaya"),
+  categories: text("categories").notNull().default("[]"),
+  createdAt: timestamp("createdAt", { withTimezone: true }).notNull().defaultNow(),
+});

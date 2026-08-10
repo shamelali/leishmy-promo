@@ -53,16 +53,17 @@ export async function GET(request: NextRequest) {
 
     const baseFilters: any[] = [notLike(profiles.userId, "artist-seed%")];
 
-    if (search) {
-      baseFilters.push(
-        or(
-          ilike(users.name, `%${search}%`),
-          ilike(users.location, `%${search}%`),
-          ilike(profiles.bio, `%${search}%`),
-          ilike(profiles.area, `%${search}%`),
-        ),
-      );
-    }
+     if (search) {
+       baseFilters.push(
+         or(
+           ilike(users.name, `%${search}%`),
+           ilike(users.location, `%${search}%`),
+           ilike(users.email, `%${search}%`),
+           ilike(profiles.bio, `%${search}%`),
+           ilike(profiles.area, `%${search}%`),
+         ),
+       );
+     }
 
     if (location) {
       baseFilters.push(

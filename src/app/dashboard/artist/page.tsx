@@ -298,8 +298,8 @@ const handleSendQuote = useCallback(async (bookingId: string, customAmount: numb
           onStartService={handleStartService}
           isProvider={true}
           onCompleteService={handleCompleteService}
-      />
-  );
+        />
+      );
     case "prices":
       return (
         <PricesTab

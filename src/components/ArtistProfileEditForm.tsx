@@ -38,12 +38,11 @@ interface ArtistProfileEditFormProps {
 const expertiseOptions = [
   "Bridal Makeup",
   "Events",
-  "Fashion/Editorial",
-  "Theater/Stage",
   "Commercial/TV/Film",
   "Class/Workshop",
   "Other",
   "Groom",
+  "Hijab",
 ];
 
 const languageOptions = ["English", "Malay", "Chinese", "Indian"];

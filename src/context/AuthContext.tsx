@@ -1,7 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { authClient, useSession } from "@/lib/auth/client";
+import * as React from "react";
+const { createContext, useContext, useState, useEffect } = React;
+import { authClient, useSession } from "../lib/auth/client";
 
 export interface UserProfile {
   id: string;

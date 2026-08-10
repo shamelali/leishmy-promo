@@ -23,7 +23,7 @@ export function useStudioAuth() {
   // Check if user's role has equal or higher authority than another role
   const canManageRole = (targetRole: StudioRole): boolean => {
     if (!studioRole) return false;
-    // Import here to avoid circular dependency
+    // roleAuthority is imported above
     return roleAuthority(studioRole, targetRole);
   };
    

@@ -19,6 +19,17 @@ interface PricesTabProps {
   onToggleShowPrices: (show: boolean) => void;
 }
 
+// Specialties options - kept in sync with ArtistProfileEditForm and ProfileTab
+const expertiseOptions = [
+  "Bridal Makeup",
+  "Events",
+  "Commercial/TV/Film",
+  "Class/Workshop",
+  "Other",
+  "Groom",
+  "Hijab",
+];
+
 export default function PricesTab({
   services: initialServices,
   showPrices,
@@ -28,10 +39,17 @@ export default function PricesTab({
 }: PricesTabProps) {
   const [services, setServices] = useState(initialServices);
   const [newService, setNewService] = useState({ name: "", price: "", description: "" });
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState({ name: "", price: "", description: "" });
+  
+  const handleSpecialtyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectedSpecialty(value);
+    setNewService({ ...newService, name: value });
+  };
 
   function applyResult(newList: Service[]) {
     setServices(newList);
@@ -133,6 +151,7 @@ export default function PricesTab({
       description: newService.description.trim(),
     });
     setNewService({ name: "", price: "", description: "" });
+    setSelectedSpecialty(null);
   }
 
   function startEdit(service: Service) {
@@ -216,14 +235,19 @@ export default function PricesTab({
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-gray-100 dark:border-neutral-800 p-6">
         <h2 className="text-sm font-bold text-gray-900 dark:text-white mb-4">Add Service</h2>
         <div className="space-y-3">
-          <div className="grid sm:grid-cols-2 gap-3">
-            <input
-              type="text"
-              value={newService.name}
-              onChange={(e) => setNewService({ ...newService, name: e.target.value })}
-              placeholder="Service name (e.g. Bridal Makeup)"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none"
-            />
+           <div className="grid sm:grid-cols-2 gap-3">
+             <select
+               value={selectedSpecialty || ""}
+               onChange={handleSpecialtyChange}
+               className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none appearance-none"
+             >
+               <option value="">Select a specialty...</option>
+               {expertiseOptions.map(option => (
+                 <option key={option} value={option}>
+                   {option}
+                 </option>
+               ))}
+             </select>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">RM</span>
               <input

@@ -106,16 +106,17 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const filters: any[] = [eq(profiles.role, "studio")];
-    if (search) {
-      filters.push(
-        or(
-          ilike(users.name, `%${search}%`),
-          ilike(users.location, `%${search}%`),
-          ilike(profiles.description, `%${search}%`),
-        )!,
-      );
-    }
+     const filters: any[] = [eq(profiles.role, "studio")];
+     if (search) {
+       filters.push(
+         or(
+           ilike(users.name, `%${search}%`),
+           ilike(users.location, `%${search}%`),
+           ilike(users.email, `%${search}%`),
+           ilike(profiles.description, `%${search}%`),
+         )!,
+       );
+     }
 
     const rows = await db
       .select({

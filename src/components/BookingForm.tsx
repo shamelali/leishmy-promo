@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useTransition } from "react";
 import { CalendarDays, Clock, CheckCircle, CreditCard, MapPin, ArrowRight, ArrowLeft, X, Send } from "lucide-react";
+import LocationSelector from "./LocationSelector";
 
 interface ArtistService {
   id: string;
@@ -37,11 +38,11 @@ export function BookingForm({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [service, setService] = useState("");
-  const [customService, setCustomService] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [location, setLocation] = useState("");
-  const [notes, setNotes] = useState("");
+   const [customService, setCustomService] = useState("");
+   const [date, setDate] = useState("");
+   const [time, setTime] = useState("");
+   const [location, setLocation] = useState<{ lat: number; lng: number; address: string } | null>(null);
+   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -142,21 +143,21 @@ export function BookingForm({
         serviceDesc = getServiceLabel(service);
       }
 
-      const res = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          artistId,
-          clientName: name,
-          clientEmail: email,
-          service: serviceDesc,
-          date,
-          time,
-          location,
-          notes,
-          // No fees - MUA will add them
-        }),
-      });
+       const res = await fetch("/api/bookings", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({
+           artistId,
+           clientName: name,
+           clientEmail: email,
+           service: serviceDesc,
+           date,
+           time,
+           location: location ? `${location.address.substring(0, Math.min(location.address.length, 200))} (${location.lat.toFixed(4)}, ${location.lng.toFixed(4)})` : "",
+           notes,
+           // No fees - MUA will add them
+         }),
+       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Booking failed");
@@ -561,19 +562,17 @@ export function BookingForm({
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 flex items-center gap-1">
-              <MapPin className="w-4 h-4" /> Location
-            </label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="e.g. Hotel name, studio address, or venue"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none"
-            />
-            <p className="text-xs text-gray-500 mt-1">MUA will use this to calculate any travel/accommodation fees</p>
-          </div>
+           <div>
+             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 flex items-center gap-1">
+               <MapPin className="w-4 h-4" /> Location
+             </label>
+             <LocationSelector
+               value={location}
+               onChange={setLocation}
+               disabled={submitting}
+             />
+             <p className="text-xs text-gray-500 mt-1">MUA will use this to calculate any travel/accommodation fees</p>
+           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Notes (optional)</label>
@@ -606,23 +605,25 @@ export function BookingForm({
             </p>
           </div>
 
-          <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-gray-200 dark:border-neutral-800 p-4">
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Event Details</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Date</span>
-                <span className="font-medium text-gray-900 dark:text-white">{date}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Time</span>
-                <span className="font-medium text-gray-900 dark:text-white">{time}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Location</span>
-                <span className="font-medium text-gray-900 dark:text-white">{location}</span>
-              </div>
-            </div>
-          </div>
+           <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-gray-200 dark:border-neutral-800 p-4">
+             <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Event Details</h4>
+             <div className="space-y-2 text-sm">
+               <div className="flex justify-between">
+                 <span className="text-gray-600 dark:text-gray-400">Date</span>
+                 <span className="font-medium text-gray-900 dark:text-white">{date}</span>
+               </div>
+               <div className="flex justify-between">
+                 <span className="text-gray-600 dark:text-gray-400">Time</span>
+                 <span className="font-medium text-gray-900 dark:text-white">{time}</span>
+               </div>
+               <div className="flex justify-between">
+                 <span className="text-gray-600 dark:text-gray-400">Location</span>
+                 <span className="font-medium text-gray-900 dark:text-white">
+                   {location ? `${location.address}` : ""}
+                 </span>
+               </div>
+             </div>
+           </div>
 
           <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
             <p className="text-sm text-amber-700 dark:text-amber-300">
