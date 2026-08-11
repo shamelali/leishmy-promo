@@ -7,19 +7,35 @@ on:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      NEXT_PUBLIC_URL: http://localhost:3000
+      CRON_SECRET: test-cron-secret
+      NEON_AUTH_BASE_URL: http://localhost:3000
+      NEON_AUTH_COOKIE_SECRET: test-neon-auth-cookie-secret-at-least-32-chars
+      BILLPLZ_API_URL: https://www.billplz.com/api/v3
+      BILLPLZ_API_KEY: test-billplz-api-key
+      BILLPLZ_COLLECTION_ID: test-billplz-collection-id
+      BILLPLZ_SIGNATURE_KEY: test-billplz-signature-key
+      BILLPLZ_PAYMENT_ORDER_COLLECTION_ID: test-billplz-payment-order-collection-id
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: test-cloudinary-cloud
+      CLOUDINARY_CLOUD_NAME: test-cloudinary-cloud
+      CLOUDINARY_API_KEY: test-cloudinary-api-key
+      CLOUDINARY_API_SECRET: test-cloudinary-api-secret
+      BREVO_API_KEY: test-brevo-api-key
+      FROM_EMAIL: hello@example.com
+      FROM_NAME: Leish
+      UPSTASH_REDIS_REST_URL: https://example.upstash.io
+      UPSTASH_REDIS_REST_TOKEN: test-upstash-token
     steps:
       - uses: actions/checkout@v4
-
       - uses: pnpm/action-setup@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
-
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-
       - name: Deploy to Vercel Preview
         uses: amondnet/vercel-action@v25
         with:
