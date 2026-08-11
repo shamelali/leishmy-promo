@@ -410,26 +410,27 @@ export async function GET(request: NextRequest) {
       }
       
       // Build where conditions for filtering
-      let whereConditions = [eq(bookings.userId, userId)];
-      
+      const whereConditions = [eq(bookings.userId, userId)];
+
       // Add search filter if provided
       if (search) {
-        const searchTerm = search ? `%${search}%` : "";
-        whereConditions.push(
-          or(
-            ilike(users.name, searchTerm),
-            ilike(bookings.service, searchTerm)
-          )
+        const searchTerm = `%${search}%`;
+        const searchCondition = or(
+          ilike(users.name, searchTerm),
+          ilike(bookings.service, searchTerm)
         );
+        if (searchCondition) {
+          whereConditions.push(searchCondition);
+        }
       }
-      
+
       // Add date range filters if provided
       if (startDate) {
-        whereConditions.push(gte(bookings.date, startDate));
+        whereConditions.push(gte(bookings.date, new Date(startDate)));
       }
-      
+
       if (endDate) {
-        whereConditions.push(lte(bookings.date, endDate));
+        whereConditions.push(lte(bookings.date, new Date(endDate)));
       }
       
       const [totalResult] = await db
@@ -494,25 +495,26 @@ export async function GET(request: NextRequest) {
       
       // Build where conditions for filtering
       const whereConditions = [eq(bookings.artistId, artistId)];
-      
+
       // Add search filter if provided
       if (search) {
         const searchTerm = `%${search}%`;
-        whereConditions.push(
-          or(
-            ilike(users.name, searchTerm),
-            ilike(bookings.service, searchTerm)
-          )
+        const searchCondition = or(
+          ilike(users.name, searchTerm),
+          ilike(bookings.service, searchTerm)
         );
+        if (searchCondition) {
+          whereConditions.push(searchCondition);
+        }
       }
-      
+
       // Add date range filters if provided
       if (startDate) {
-        whereConditions.push(gte(bookings.date, startDate));
+        whereConditions.push(gte(bookings.date, new Date(startDate)));
       }
-      
+
       if (endDate) {
-        whereConditions.push(lte(bookings.date, endDate));
+        whereConditions.push(lte(bookings.date, new Date(endDate)));
       }
       
       const [totalResult] = await db
@@ -573,25 +575,26 @@ export async function GET(request: NextRequest) {
 
     // Build where conditions for filtering
     const whereConditions = [];
-    
+
     // Add search filter if provided
     if (search) {
       const searchTerm = `%${search}%`;
-      whereConditions.push(
-        or(
-          ilike(users.name, searchTerm),
-          ilike(bookings.service, searchTerm)
-        )
+      const searchCondition = or(
+        ilike(users.name, searchTerm),
+        ilike(bookings.service, searchTerm)
       );
+      if (searchCondition) {
+        whereConditions.push(searchCondition);
+      }
     }
-    
+
     // Add date range filters if provided
     if (startDate) {
-      whereConditions.push(gte(bookings.date, startDate));
+      whereConditions.push(gte(bookings.date, new Date(startDate)));
     }
-    
+
     if (endDate) {
-      whereConditions.push(lte(bookings.date, endDate));
+      whereConditions.push(lte(bookings.date, new Date(endDate)));
     }
 
     const [totalResult] = await db
@@ -599,53 +602,52 @@ export async function GET(request: NextRequest) {
       .from(bookings)
       .leftJoin(users, eq(bookings.userId, users.id))
       .leftJoin(profiles, eq(bookings.artistId, profiles.userId))
-      .leftJoin(users, eq(profiles.userId, users.id), alias(users, "artist_users"))
+      .leftJoin(artistUsers, eq(profiles.userId, artistUsers.id))
       .where(and(...whereConditions));
     const total = totalResult?.count ?? 0;
     const rawBookings = await db
-      .select()
+      .select({
+        id: bookings.id,
+        userId: bookings.userId,
+        artistId: bookings.artistId,
+        studioId: bookings.studioId,
+        serviceId: bookings.serviceId,
+        service: bookings.service,
+        notes: bookings.notes,
+        location: bookings.location,
+        placeId: bookings.placeId,
+        date: bookings.date,
+        time: bookings.time,
+        amount: bookings.amount,
+        depositAmount: bookings.depositAmount,
+        milestone: bookings.milestone,
+        secondPaymentDueDate: bookings.secondPaymentDueDate,
+        lateFeeCharged: bookings.lateFeeCharged,
+        noShow: bookings.noShow,
+        travelSurcharge: bookings.travelSurcharge,
+        accommodationFee: bookings.accommodationFee,
+        remainingPaymentSent: bookings.remainingPaymentSent,
+        status: bookings.status,
+        createdAt: bookings.createdAt,
+        updatedAt: bookings.updatedAt,
+        clientName: users.name,
+        clientEmail: users.email,
+        artistName: artistUsers.name,
+      })
       .from(bookings)
       .leftJoin(users, eq(bookings.userId, users.id))
       .leftJoin(profiles, eq(bookings.artistId, profiles.userId))
-      .leftJoin(users, eq(profiles.userId, users.id), alias(users, "artist_users"))
+      .leftJoin(artistUsers, eq(profiles.userId, artistUsers.id))
       .where(and(...whereConditions))
       .limit(pageSize)
       .offset(offset);
 
-    const allBookings = await Promise.all(
-      rawBookings.map(async (b) => {
-        let clientName = "Anonymous";
-        let clientEmail = "";
-        if (b.userId) {
-          const [user] = await db
-            .select({ name: users.name, email: users.email })
-            .from(users)
-            .where(eq(users.id, b.userId))
-            .limit(1);
-          if (user) {
-            clientName = user.name || "Anonymous";
-            clientEmail = user.email || "";
-          }
-        }
-        let artistName = "";
-        if (b.artistId) {
-          const [artist] = await db
-            .select({ name: users.name })
-            .from(profiles)
-            .innerJoin(users, eq(users.id, profiles.userId))
-            .where(and(eq(profiles.userId, b.artistId), eq(profiles.role, "artist")))
-            .limit(1);
-          artistName = artist?.name || "";
-        }
-        return {
-          ...b,
-          id: String(b.id),
-          clientName,
-          clientEmail,
-          artistName,
-        };
-      }),
-    );
+    const allBookings = rawBookings.map((b) => ({
+      ...b,
+      id: String(b.id),
+      clientName: b.clientName || "Anonymous",
+      artistId: b.artistId ? String(b.artistId) : null,
+    }));
 
     return NextResponse.json({
       bookings: allBookings,

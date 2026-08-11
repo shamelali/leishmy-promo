@@ -195,7 +195,7 @@ export default function PromoPage() {
                   <span className="font-black tracking-[-0.02em] text-[18px]">LEISH!</span>
                 </a>
                 <p className="mt-3 text-[13px] leading-[1.5] text-black/60 max-w-[320px]">
-                  Malaysia's beauty booking marketplace. Book top-rated MUAs, hijab stylists & bridal pros — anywhere in Cyberjaya, KL & Selangor.
+                  Malaysia&apos;s beauty booking marketplace. Book top-rated MUAs, hijab stylists & bridal pros — anywhere in Cyberjaya, KL & Selangor.
                 </p>
                 <div className="mt-4 flex items-center gap-2 text-[12px]">
                   <a href="https://instagram.com/leish.my" target="_blank" rel="noopener" className="h-8 w-8 rounded-full bg-black/[0.06] grid place-items-center hover:bg-black hover:text-white transition">

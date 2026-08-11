@@ -75,7 +75,7 @@ export function BenefitsSection() {
               </span>
             </div>
             <p className="mt-3 text-[14px] text-white/60 leading-[1.5]">
-              Are you a Makeup Artist? Join Malaysia's Beauty Platform. We're building the largest network of beauty professionals in Cyberjaya, Selangor.
+               Are you a Makeup Artist? Join Malaysia&apos;s Beauty Platform. We&apos;re building the largest network of beauty professionals in Cyberjaya, Selangor.
             </p>
             <ul className="mt-6 space-y-3 relative">
               <li className="flex gap-3 text-[14px] leading-[1.4]">

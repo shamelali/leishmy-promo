@@ -56,7 +56,7 @@ export function TestimonialsCarouselSection() {
                     </span>
                   ))}
                 </span>
-                " 4.9/5"
+                {" 4.9/5"}
               </span>
               <span className="text-black/50">from 500+ reviews • Real bookings</span>
             </div>

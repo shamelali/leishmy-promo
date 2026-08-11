@@ -73,13 +73,6 @@ const [geoLoading, setGeoLoading] = useState(false);
   const mapRef = useRef<HTMLElement>(null);
   const leafletMapRef = useRef<L.Map | null>(null);
 
-  // Initialize selected location from props on mount
-  useEffect(() => {
-    if (value) {
-      setSelectedLocation(value);
-    }
-  }, [value]);
-
   // Debounced search to prevent excessive API calls
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   useEffect(() => {

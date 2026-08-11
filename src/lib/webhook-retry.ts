@@ -207,4 +207,20 @@ export class WebhookRetryService {
     console.log(`[WebhookRetry] Dead letter event ${eventId} moved to retry queue`);
     return true;
   }
+
+  static async getDeadLetterCount(): Promise<number> {
+    const [result] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(webhookEvents)
+      .where(eq(webhookEvents.status, "dead_letter"));
+    return result?.count ?? 0;
+  }
+
+  static async getRetryScheduledCount(): Promise<number> {
+    const [result] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(webhookEvents)
+      .where(eq(webhookEvents.status, "retry_scheduled"));
+    return result?.count ?? 0;
+  }
 }

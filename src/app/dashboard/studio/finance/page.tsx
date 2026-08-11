@@ -39,6 +39,7 @@ const payoutStatusColor: Record<string, string> = {
 export default function StudioFinance() {
   const { user } = useAuth();
   const { studioRole, isStudioUser, can } = useStudioAuth();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [revenue, setRevenue] = useState(0);
   const [pendingBalance, setPendingBalance] = useState(0);
