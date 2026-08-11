@@ -16,6 +16,9 @@ function getConnection() {
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,
       allowExitOnIdle: true,
+      ssl: process.env.DB_DISABLE_SSL_VERIFY === "true"
+        ? { rejectUnauthorized: false }
+        : undefined,
     });
 
     // Neon (and most serverless Postgres proxies) close idle connections
