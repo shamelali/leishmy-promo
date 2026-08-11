@@ -18,6 +18,7 @@ const PUBLIC_ROUTES = [
   "/privacy-policy",
   "/terms-of-service",
   "/cancellation-policy",
+  "/public-wifi",
 ] as const;
 
 function normalizeBaseUrl(url: string): string {
